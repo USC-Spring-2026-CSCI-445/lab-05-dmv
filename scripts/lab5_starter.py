@@ -114,8 +114,8 @@ class GoalPositionController:
         # define PID controllers for linear and angular velocities
         ######### Your code starts here #########
         # self.angular_pd = PDController(kP=1.5, kD=2.0, kS=1.0, u_min=-2.0, u_max=2.0)
-        # self.linear_pid = PIDController(kP=0.8, kI=0.0, kD=0.05, kS=0.5, u_min=0.0, u_max=0.22)
-        self.angular_pid = PIDController(kP=1.5, kI=0.02, kD=2.0, kS=1.0, u_min=-2.0, u_max=2.0)
+        self.linear_pid = PIDController(kP=0.8, kI=0.01, kD=0.1, kS=0.5, u_min=0.0, u_max=0.22)
+        self.angular_pid = PIDController(kP=1.2, kI=0.02, kD=1.0, kS=1.0, u_min=-2.0, u_max=2.0)
         ######### Your code ends here #########
 
     def odom_callback(self, msg):
@@ -163,9 +163,9 @@ class GoalPositionController:
             t = rospy.get_time()
 
             # Base version
-            w = self.angular_pid.control(angle_error, t)
-            ctrl_msg.linear.x = 0.15
-            ctrl_msg.angular.z = w
+            # w = self.angular_pid.control(angle_error, t)
+            # ctrl_msg.linear.x = 0.15
+            # ctrl_msg.angular.z = w
 
             # Stop near goal
             # if distance_error < 0.05:
@@ -177,15 +177,14 @@ class GoalPositionController:
             #     ctrl_msg.angular.z = w
 
             # Slow down near goal
-            # if distance_error < 0.05:
-            #     ctrl_msg.linear.x = 0.0
-            #     ctrl_msg.angular.z = 0.0
-            # else:
-                # w = self.angular_pid.control(angle_error, t)
-                # v = self.linear_pid.control(distance_error, t)
-
-                # ctrl_msg.linear.x = v
-                # ctrl_msg.angular.z = w
+            if abs(angle_error) < 0.02:
+                ctrl_msg.linear.x = 0.0
+                ctrl_msg.angular.z = 0.0
+            else:
+                w = self.angular_pid.control(angle_error, t)
+                v = self.linear_pid.control(distance_error, t)
+                ctrl_msg.linear.x = v
+                ctrl_msg.angular.z = w
 
             self.vel_pub.publish(ctrl_msg)
             ######### Your code ends here #########
