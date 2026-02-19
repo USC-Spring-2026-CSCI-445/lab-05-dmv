@@ -114,8 +114,8 @@ class GoalPositionController:
         # define PID controllers for linear and angular velocities
         ######### Your code starts here #########
         # self.angular_pd = PDController(kP=1.5, kD=2.0, kS=1.0, u_min=-2.0, u_max=2.0)
-        self.linear_pid = PIDController(kP=0.8, kI=0.01, kD=0.1, kS=0.5, u_min=0.0, u_max=0.22)
-        self.angular_pid = PIDController(kP=1.2, kI=0.02, kD=1.0, kS=1.0, u_min=-2.0, u_max=2.0)
+        self.linear_pid = PIDController(kP=1.2, kI=0.01, kD=1.5, kS=0.5, u_min=0.0, u_max=0.22)
+        self.angular_pid = PIDController(kP=1.2, kI=0.2, kD=1.0, kS=0.5, u_min=-2.0, u_max=2.0)
         ######### Your code ends here #########
 
     def odom_callback(self, msg):
